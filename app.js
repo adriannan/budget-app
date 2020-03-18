@@ -76,7 +76,6 @@ const UIController = (function() {
 
       // Create HTML string with placeholder text
       // replace the placeholder text with some actual data
-
       if (type === "exp") {
         list = document.querySelector(DOMStrings.expenseList);
         html = `<div class="item clearfix" id="expense-${obj.id}">
@@ -100,10 +99,18 @@ const UIController = (function() {
                   </div>
                 </div>`;
       }
-
       // insert the hTML into the DOM
-
       list.insertAdjacentHTML("beforeend", html);
+    },
+    clearInputs: function() {
+      let fields, fieldsArr;
+      fields = document.querySelectorAll(
+        `${DOMStrings.inputDescription}, ${DOMStrings.inputValue}`
+      );
+      fieldsArr = Array.prototype.slice.call(fields);
+      fields.forEach(item => {
+        item.value = "";
+      });
     },
     getDOMStrings: function() {
       return DOMStrings;
@@ -129,11 +136,9 @@ const controller = (function(budgetCtrl, UICtrl) {
     let getInput, newItem, newListItem;
 
     //  1. get the field input data
-
     getInput = UICtrl.getInput();
 
     //  2. add the item to the budget controller
-
     newItem = budgetCtrl.addItem(
       getInput.type,
       getInput.description,
@@ -141,11 +146,14 @@ const controller = (function(budgetCtrl, UICtrl) {
     );
 
     //  3. add the item to the UI
-
     newListItem = UICtrl.addListItem(newItem, getInput.type);
 
-    //  4. calculate the budget
-    //  5. display the budget on the UI
+    //  4. clear the fields
+    UICtrl.clearInputs();
+
+    //  5. calculate the budget
+
+    //  6. display the budget on the UI
   };
 
   return {
