@@ -124,7 +124,19 @@ const UIController = (function() {
     expenseLabel: ".budget__expenses--value",
     percentageLabel: ".budget__expenses--percentage",
     container: ".container",
-    expensePercLabel: ".item__percentage"
+    expensePercLabel: ".item__percentage",
+    dateLabel: ".budget__title--month"
+  };
+  const formatNumber = function(num, type) {
+    let numSplit, int, dec;
+    num = Math.abs(num).toFixed(2);
+    numSplit = num.split(".");
+    int = numSplit[0];
+    dec = numSplit[1];
+    if (int.length > 3) {
+      int = int.substr(0, int.length - 3) + "," + int.substr(int.length - 3, 3);
+    }
+    return `${type === "exp" ? "-" : "+"} ${int}.${dec}`;
   };
 
   return {
@@ -145,7 +157,10 @@ const UIController = (function() {
         html = `<div class="item clearfix" id="exp-${obj.id}">
                   <div class="item__description">${obj.description}</div>
                   <div class="right clearfix">
-                    <div class="item__value">${obj.value}</div>
+                    <div class="item__value">${formatNumber(
+                      obj.value,
+                      type
+                    )}</div>
                     <div class="item__percentage">21%</div>
                     <div class="item__delete">
                      <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
@@ -157,7 +172,10 @@ const UIController = (function() {
         html = `<div class="item clearfix" id="inc-${obj.id}">
                   <div class="item__description">${obj.description}</div>
                   <div class="right clearfix">
-                    <div class="item__value">${obj.value}</div>
+                    <div class="item__value">${formatNumber(
+                      obj.value,
+                      type
+                    )}</div>
                     <div class="item__delete">
                       <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
                     </div>
@@ -182,10 +200,19 @@ const UIController = (function() {
       });
     },
     displayBudget: function(obj) {
-      document.querySelector(DOMStrings.budgetLabel).textContent = obj.budget;
-      document.querySelector(DOMStrings.incomeLabel).textContent = obj.totalInc;
-      document.querySelector(DOMStrings.expenseLabel).textContent =
-        obj.totalExp;
+      let type;
+      obj.budget > 0 ? (type = "inc") : (type = "exp");
+      document.querySelector(DOMStrings.budgetLabel).textContent = formatNumber(
+        obj.budget,
+        type
+      );
+      document.querySelector(DOMStrings.incomeLabel).textContent = formatNumber(
+        obj.totalInc,
+        "inc"
+      );
+      document.querySelector(
+        DOMStrings.expenseLabel
+      ).textContent = formatNumber(obj.totalExp, "exp");
       if (obj.percentage > 0) {
         document.querySelector(
           DOMStrings.percentageLabel
@@ -210,6 +237,13 @@ const UIController = (function() {
           current.textContent = "-";
         }
       });
+    },
+    displayDate: function() {
+      let date, month, year;
+      date = new Date();
+      month = date.getMonth();
+      year = date.getFullYear();
+      document.querySelector(DOMStrings.dateLabel).textContent = year;
     },
     getDOMStrings: function() {
       return DOMStrings;
@@ -308,13 +342,14 @@ const controller = (function(budgetCtrl, UICtrl) {
   return {
     init: function() {
       console.log("Application has started.");
-      setupEventListeners();
+      UICtrl.displayDate();
       UICtrl.displayBudget({
         budget: 0,
         totalInc: 0,
         totalExp: 0,
         percentage: 0
       });
+      setupEventListeners();
     }
   };
 })(budgetController, UIController);
