@@ -232,7 +232,7 @@ const UIController = (function() {
         if (percentages[index] > 0) {
           current.textContent = `${percentages[index]}%`;
         } else {
-          current.textContent = "-";
+          current.textContent = "<1%";
         }
       });
     },
