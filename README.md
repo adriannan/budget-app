@@ -11,5 +11,13 @@ This app allows us to add incomes and expenses for a currently month, then calcu
 
 #### Usage
 
+- go to:
+ > https://adriannan.github.io/budget-app/
+ 
+- or clone the repository using &darr;  and open index.html file in the browser
+ ```
+  git clone git@github.com:adriannan/budget-app.git
+ ```
+
 - to add a new income or expense use + and - options 
 - then add a descritpion and the value
